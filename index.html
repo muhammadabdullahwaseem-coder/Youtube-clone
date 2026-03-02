@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Clone</title>
+  <link rel="icon" type="image/png" href="./Untitled.png">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  
+</head>
+<body>
+  <div class="avatar">${initials}</div>
+  <!-- Navbar -->
+  <header class="topbar">
+  <div class="left">
+    <button class="iconBtn" aria-label="Menu">
+      <span class="material-symbols-outlined" style="color:#fff">
+dehaze
+</span>
+    </button>
+
+    <a class="brand" href="/index.html">
+      <img className="ytLogo" src="/image.png" alt="YouTube">
+      
+    </a>
+  </div>
+
+  <div class="center">
+    <div class="searchWrap">
+      <input class="searchInput" placeholder="Search">
+      <button class="iconBtn searchBtn" aria-label="Search">
+        <span class="material-symbols-outlined" style="color:#fff">search</span>
+      </button>
+    </div>
+
+    <button class="iconBtn micBtn" aria-label="Mic">
+      <span class="material-symbols-outlined" style="color:#fff">mic</span>
+    </button>
+  </div>
+
+  <div class="right">
+    <button class="iconBtn" aria-label="Bell">
+      <span class="material-symbols-outlined" style="color:#fff">
+notifications
+</span>
+    </button>
+    <button class="profileBtn" aria-label="Profile">
+      <img src="/icons8-profile-48.png" alt="Profile">
+    </button>
+  </div>
+</header>
+  <!-- App Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a class="side-link active" href="/index.html">Home</a>
+      
+      <a class="side-link" href="/short.html">Shorts</a>
+      <a class="side-link" href="#">Subscriptions</a>
+    </aside>
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Videos Grid: Top -->
+      <section class="videos-grid" id="videoGrid"></section>
+      <!-- Shorts Shelf -->
+      <section class="shorts-shelf">
+        <div class="shorts-head">
+          <div class="shorts-title">Shorts</div>
+          <button class="shorts-next" id="shortsNext" type="button" aria-label="Next">></button>
+        </div>
+        <div class="shorts-row" id="shortsRow"></div>
+      </section>
+      <!-- Videos Grid: Bottom -->
+      <section class="videos-grid" id="videoGrid2"></section>
+
+    </main>
+
+  </div>
+
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>

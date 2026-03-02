@@ -1,0 +1,9 @@
+/* Page Base */
+body{ background:#0f0f0f; color:#fff; font-family:Arial; }
+/* Navbar */
+.topbar{ height:56px; display:flex; align-items:center; gap:12px; padding:0 16px; border-bottom:1px solid #222; }
+.back{ color:#fff; text-decoration:none; }
+/* Watch Player */
+.wrap{ padding:16px; display:flex; justify-content:center; }
+.player{ width:min(1000px, 100%); aspect-ratio:16/9; }
+.player iframe{ width:100%; height:100%; border-radius:12px; border:0; }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shorts</title>
+  <link rel="icon" type="image/png" href="./Untitled.png">
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+  
+  <!-- Navbar -->
+  <header class="topbar">
+    <div class="left">
+      <a class="brand" href="/index.html">
+      <img className="ytLogo" src="/image.png" alt="YouTube">
+      
+    </a>
+    </div>
+    <div class="right"></div>
+  </header>
+  <!-- App Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a class="side-link" href="/index.html">Home</a>
+      <a class="side-link active" href="/short.html">Shorts</a>
+      <a class="side-link" href="#">Subscriptions</a>
+    </aside>
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Shorts Player -->
+      <div class="shortsFeed">
+        <button class="shortNav" id="prevShort" type="button">↑</button>
+
+        <div class="shortPlayer" id="shortWrap"></div>
+
+        <button class="shortNav" id="nextShort" type="button">↓</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/short.js"></script>
+</body>
+</html>
