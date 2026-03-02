@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp public/watch.html dist/watch.html && cp public/short.html dist/short.html",
     "lint": "eslint .",
     "preview": "vite preview"
   },
