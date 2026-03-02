@@ -1,5 +1,55 @@
 "use strict";
+function parseHash() {
+  const h = window.location.hash || "#/";
+  const [pathPart, queryPart] = h.slice(1).split("?");
+  const params = new URLSearchParams(queryPart || "");
+  return { path: "/" + (pathPart || ""), params };
+}
 
+function showHome() {
+  document.getElementById("watchView").style.display = "none";
+  document.getElementById("videoGrid").style.display = "";
+  const shelf = document.querySelector(".shorts-shelf");
+  if (shelf) shelf.style.display = "";
+  const grid2 = document.getElementById("videoGrid2");
+  if (grid2) grid2.style.display = "";
+}
+
+function showWatch(id) {
+  document.getElementById("watchView").style.display = "";
+  document.getElementById("videoGrid").style.display = "none";
+  const shelf = document.querySelector(".shorts-shelf");
+  if (shelf) shelf.style.display = "none";
+  const grid2 = document.getElementById("videoGrid2");
+  if (grid2) grid2.style.display = "none";
+
+  document.getElementById("watchPlayer").innerHTML = `
+    <iframe
+      src="https://www.youtube.com/embed/${id}?autoplay=1"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  `;
+}
+
+function handleRoute() {
+  const { path, params } = parseHash();
+
+  if (path === "/watch") {
+    const id = params.get("id");
+    if (id) showWatch(id);
+    else showHome();
+    return;
+  }
+
+  // optional: if you want shorts inside index too
+  // if (path === "/short") { ... }
+
+  showHome();
+}
+
+window.addEventListener("hashchange", handleRoute);
+window.addEventListener("load", handleRoute);
 /* Home Feed Data */
 const items = [
  { type: "short", url: "https://youtube.com/shorts/6Y6C86zRvdI?si=tT9NnhbQxsrQin_n", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
@@ -80,7 +130,7 @@ function renderShorts(shorts) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.href = `/#/short?id=${v.id}`;
+      window.location.hash = `/#/short?id=${v.id}`;
     });
     row.appendChild(card);
   });
@@ -108,7 +158,7 @@ function renderLongVideos(gridEl, videos) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.href = `/#/watch?id=${v.id}`;
+      window.location.hash = `/#/watch?id=${v.id}`;
     });
     gridEl.appendChild(card);
   });
