@@ -80,7 +80,7 @@ function renderShorts(shorts) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.href = `/short.html?id=${v.id}`;
+      window.location.href = `/#/short?id=${v.id}`;
     });
     row.appendChild(card);
   });
@@ -108,7 +108,7 @@ function renderLongVideos(gridEl, videos) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.href = `/watch.html?id=${v.id}`;
+      window.location.href = `/#/watch?id=${v.id}`;
     });
     gridEl.appendChild(card);
   });
