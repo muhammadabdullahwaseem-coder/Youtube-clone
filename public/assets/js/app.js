@@ -68,11 +68,11 @@ function handleRoute() {
 
 window.addEventListener("hashchange", handleRoute);
 window.addEventListener("DOMContentLoaded", handleRoute);
-window.addEventListener("hashchange", handleRoute);
 window.addEventListener("load", handleRoute);
+
 /* Home Feed Data */
 const items = [
- { type: "short", url: "https://youtube.com/shorts/6Y6C86zRvdI?si=tT9NnhbQxsrQin_n", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
+  { type: "short", url: "https://youtube.com/shorts/6Y6C86zRvdI?si=tT9NnhbQxsrQin_n", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
   { type: "short", url: "https://www.youtube.com/shorts/g8-EVsySHXg", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
   { type: "short", url: "https://youtube.com/shorts/qC-Yadx3O4A?si=tAXzguIZlmy71pZp", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
   { type: "short", url: "https://youtube.com/shorts/BVyxC68kHdc?si=vYz2OjiPipyaxuf4", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
@@ -109,21 +109,33 @@ function escapeHtml(str = "") {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
+
+function ytThumb(id) {
+  return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+}
+
 async function fetchMeta(url) {
-  const o = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;
-  const res = await fetch(o);
+  const oembed = `https://noembed.com/embed?url=${encodeURIComponent(url)}`;
+  const res = await fetch(oembed);
   if (!res.ok) throw new Error("oEmbed failed");
   const data = await res.json();
   return { title: data.title, channel: data.author_name, thumb: data.thumbnail_url };
 }
+
 /* Data Hydration */
 async function hydrateAll(list) {
   const valid = list.filter(x => x.url && x.url.trim());
   const out = await Promise.allSettled(
     valid.map(async (it) => {
       const id = getYouTubeId(it.url);
-      const meta = await fetchMeta(it.url);
-      return { ...it, id, ...meta };
+      try {
+        const meta = await fetchMeta(it.url);
+        const thumb = (it.cleanThumb && it.cleanThumbSrc) ? it.cleanThumbSrc : (meta.thumb || ytThumb(id));
+        return { ...it, id, ...meta, thumb };
+      } catch (e) {
+        const thumb = (it.cleanThumb && it.cleanThumbSrc) ? it.cleanThumbSrc : ytThumb(id);
+        return { ...it, id, title: it.title || "Video", channel: it.channel || "", thumb };
+      }
     })
   );
   return out
@@ -150,7 +162,8 @@ function renderShorts(shorts) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.hash = `/#/short?id=${v.id}`;
+      const sid = v.id || getYouTubeId(v.url);
+      window.location.href = `/short.html?id=${sid}`;
     });
     row.appendChild(card);
   });
@@ -161,6 +174,8 @@ function renderLongVideos(gridEl, videos) {
   gridEl.innerHTML = "";
 
   videos.forEach(v => {
+    const initials = (v.channel || "Y").trim().slice(0, 1).toUpperCase();
+
     const card = document.createElement("div");
     card.className = "video-card";
     card.innerHTML = `
@@ -169,7 +184,7 @@ function renderLongVideos(gridEl, videos) {
       </div>
 
       <div class="video-meta">
-        <div class="avatar"></div>
+        <div class="avatar">${escapeHtml(initials)}</div>
         <div>
           <div class="video-title">${escapeHtml(v.title)}</div>
           <div class="video-channel">${escapeHtml(v.channel)}</div>
@@ -178,7 +193,9 @@ function renderLongVideos(gridEl, videos) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.hash = `/watch?id=${id}`;;
+      const vid = v.id || getYouTubeId(v.url);
+      window.location.hash = `/watch?id=${vid}`;
+      handleRoute();
     });
     gridEl.appendChild(card);
   });
@@ -204,4 +221,3 @@ function renderLongVideos(gridEl, videos) {
     btn.addEventListener("click", () => row.scrollBy({ left: 420, behavior: "smooth" }));
   }
 })();
-const initials = (v.channel || "Y").trim().slice(0,1).toUpperCase();
