@@ -1,12 +1,14 @@
+/* Router */
 function parseHash() {
   const raw = window.location.hash || "#/";
-  const cleaned = raw.startsWith("#") ? raw.slice(1) : raw; // "/watch?id=..."
+  const cleaned = raw.startsWith("#") ? raw.slice(1) : raw;
   const [pathPart, queryPart] = cleaned.split("?");
   const path = pathPart || "/";
   const params = new URLSearchParams(queryPart || "");
   return { path, params };
 }
 
+/* Home View */
 function showHomeView() {
   const watchView = document.getElementById("watchView");
   if (watchView) watchView.style.display = "none";
@@ -21,6 +23,7 @@ function showHomeView() {
   if (grid2) grid2.style.display = "";
 }
 
+/* Watch View */
 function showWatchView(id) {
   const watchView = document.getElementById("watchView");
   const watchPlayer = document.getElementById("watchPlayer");
@@ -50,10 +53,9 @@ function showWatchView(id) {
   `;
 }
 
+/* Route Handler */
 function handleRoute() {
   const { path, params } = parseHash();
-
-  // DEBUG PROOF: if this log doesn't appear, app.js isn't running
   console.log("ROUTE:", path, "id:", params.get("id"));
 
   if (path === "/watch") {
@@ -70,7 +72,7 @@ window.addEventListener("hashchange", handleRoute);
 window.addEventListener("DOMContentLoaded", handleRoute);
 window.addEventListener("load", handleRoute);
 
-/* Home Feed Data */
+/* Feed Data */
 const items = [
   { type: "short", url: "https://youtube.com/shorts/6Y6C86zRvdI?si=tT9NnhbQxsrQin_n", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
   { type: "short", url: "https://www.youtube.com/shorts/g8-EVsySHXg", cleanThumb: false, cleanThumbSrc: "/assets/img/thumbs/shorts.svg" },
@@ -93,7 +95,7 @@ const items = [
   { type: "video", url: "https://youtu.be/Mus_vwhTCq0?si=kyAWqgdRDBuN0bBS", cleanThumb: false },
 ];
 
-/* Helpers */
+/* Utility Helpers */
 function getYouTubeId(link) {
   const u = new URL(link);
   if (u.hostname.includes("youtu.be")) return u.pathname.replace("/", "");
@@ -122,7 +124,7 @@ async function fetchMeta(url) {
   return { title: data.title, channel: data.author_name, thumb: data.thumbnail_url };
 }
 
-/* Data Hydration */
+/* Data Loader */
 async function hydrateAll(list) {
   const valid = list.filter(x => x.url && x.url.trim());
   const out = await Promise.allSettled(
@@ -201,7 +203,7 @@ function renderLongVideos(gridEl, videos) {
   });
 }
 
-/* Page Init */
+/* App Init */
 (async function init() {
   const grid1 = document.getElementById("videoGrid");
   const grid2 = document.getElementById("videoGrid2");
