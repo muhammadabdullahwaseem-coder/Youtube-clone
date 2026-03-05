@@ -1,29 +1,47 @@
-"use strict";
 function parseHash() {
-  const h = window.location.hash || "#/";
-  const [pathPart, queryPart] = h.slice(1).split("?");
+  const raw = window.location.hash || "#/";
+  const cleaned = raw.startsWith("#") ? raw.slice(1) : raw; // "/watch?id=..."
+  const [pathPart, queryPart] = cleaned.split("?");
+  const path = pathPart || "/";
   const params = new URLSearchParams(queryPart || "");
-  return { path: "/" + (pathPart || ""), params };
+  return { path, params };
 }
 
-function showHome() {
-  document.getElementById("watchView").style.display = "none";
-  document.getElementById("videoGrid").style.display = "";
+function showHomeView() {
+  const watchView = document.getElementById("watchView");
+  if (watchView) watchView.style.display = "none";
+
+  const grid1 = document.getElementById("videoGrid");
+  if (grid1) grid1.style.display = "";
+
   const shelf = document.querySelector(".shorts-shelf");
   if (shelf) shelf.style.display = "";
+
   const grid2 = document.getElementById("videoGrid2");
   if (grid2) grid2.style.display = "";
 }
 
-function showWatch(id) {
-  document.getElementById("watchView").style.display = "";
-  document.getElementById("videoGrid").style.display = "none";
+function showWatchView(id) {
+  const watchView = document.getElementById("watchView");
+  const watchPlayer = document.getElementById("watchPlayer");
+
+  if (!watchView || !watchPlayer) {
+    console.error("Missing #watchView or #watchPlayer in index.html");
+    return;
+  }
+
+  watchView.style.display = "";
+
+  const grid1 = document.getElementById("videoGrid");
+  if (grid1) grid1.style.display = "none";
+
   const shelf = document.querySelector(".shorts-shelf");
   if (shelf) shelf.style.display = "none";
+
   const grid2 = document.getElementById("videoGrid2");
   if (grid2) grid2.style.display = "none";
 
-  document.getElementById("watchPlayer").innerHTML = `
+  watchPlayer.innerHTML = `
     <iframe
       src="https://www.youtube.com/embed/${id}?autoplay=1"
       allow="autoplay; encrypted-media"
@@ -35,19 +53,21 @@ function showWatch(id) {
 function handleRoute() {
   const { path, params } = parseHash();
 
+  // DEBUG PROOF: if this log doesn't appear, app.js isn't running
+  console.log("ROUTE:", path, "id:", params.get("id"));
+
   if (path === "/watch") {
     const id = params.get("id");
-    if (id) showWatch(id);
-    else showHome();
+    if (id) showWatchView(id);
+    else showHomeView();
     return;
   }
 
-  // optional: if you want shorts inside index too
-  // if (path === "/short") { ... }
-
-  showHome();
+  showHomeView();
 }
 
+window.addEventListener("hashchange", handleRoute);
+window.addEventListener("DOMContentLoaded", handleRoute);
 window.addEventListener("hashchange", handleRoute);
 window.addEventListener("load", handleRoute);
 /* Home Feed Data */
@@ -158,7 +178,7 @@ function renderLongVideos(gridEl, videos) {
       </div>
     `;
     card.addEventListener("click", () => {
-      window.location.hash = `/#/watch?id=${v.id}`;
+      window.location.hash = `/watch?id=${id}`;;
     });
     gridEl.appendChild(card);
   });
